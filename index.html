@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waypath — Find Your Way Forward</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#172554;--purple:#7c3aed;--sky:#38bdf8;--mint:#34d399;--yellow:#fbbf24;--lav:#f5f3ff;--white:#fff}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--navy);background:#fafaff;overflow-x:hidden}
+button{font:inherit;cursor:pointer;border:0}
+nav{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #eee}
+.logo{font-weight:900;font-size:25px;letter-spacing:-1px}.logo span{color:var(--purple)}
+.navlinks{display:flex;gap:28px;align-items:center}.navlinks a{color:#5b6072;text-decoration:none;font-weight:600;font-size:14px}.navlinks a:hover{color:var(--purple)}
+.hero{min-height:650px;padding:85px 7% 70px;display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center;background:radial-gradient(circle at 80% 20%,#e9ddff 0,transparent 34%),linear-gradient(135deg,#fff 0%,#f7f4ff 100%);position:relative}
+.badge{display:inline-flex;gap:8px;align-items:center;padding:9px 14px;border-radius:99px;background:#ede9fe;color:#6d28d9;font-weight:800;font-size:13px;margin-bottom:20px}
+h1{font-size:clamp(48px,6vw,76px);line-height:.98;letter-spacing:-4px;margin-bottom:22px}
+h1 em{font-style:normal;color:var(--purple)}
+.hero p{font-size:19px;line-height:1.6;color:#606779;max-width:570px;margin-bottom:30px}
+.cta{background:var(--purple);color:white;padding:15px 23px;border-radius:14px;font-weight:800;box-shadow:0 10px 25px #7c3aed33}.cta:hover{transform:translateY(-2px)}
+.map{height:440px;position:relative;border-radius:32px;background:#fff;box-shadow:0 25px 70px #24105218;border:1px solid #eee8ff;overflow:hidden}
+.map:before,.map:after{content:"";position:absolute;border-radius:50%;border:1px dashed #d8c9ff}.map:before{width:390px;height:390px;left:15%;top:3%}.map:after{width:255px;height:255px;left:31%;top:18%}
+.star{position:absolute;width:74px;height:74px;border-radius:50%;display:grid;place-items:center;font-size:26px;box-shadow:0 8px 25px #0001;z-index:2;transition:.3s}.star:hover{transform:scale(1.12)}.s1{left:42%;top:39%;background:#ede9fe}.s2{left:15%;top:18%;background:#dff8ff}.s3{left:70%;top:20%;background:#dcfce7}.s4{left:75%;top:62%;background:#fff4c9}.s5{left:17%;top:67%;background:#ffe5f1}
+.line{position:absolute;height:3px;background:linear-gradient(90deg,#c4b5fd,#38bdf8);transform-origin:left center;z-index:1;border-radius:5px}.l1{width:190px;left:24%;top:31%;transform:rotate(23deg)}.l2{width:180px;left:50%;top:42%;transform:rotate(-25deg)}.l3{width:175px;left:52%;top:53%;transform:rotate(27deg)}.l4{width:185px;left:26%;top:57%;transform:rotate(-20deg)}
+.mini{position:absolute;background:white;border:1px solid #eee;padding:9px 12px;border-radius:12px;font-size:11px;font-weight:800;color:#6b7280;z-index:3;box-shadow:0 5px 15px #0000000b}.m1{left:7%;top:44%}.m2{right:6%;top:42%}.m3{left:38%;bottom:6%}
+section{padding:85px 7%}.sectionhead{text-align:center;max-width:700px;margin:0 auto 45px}.sectionhead h2{font-size:42px;letter-spacing:-2px;margin-bottom:12px}.sectionhead p{color:#6b7280;line-height:1.6}
+.choices{display:grid;grid-template-columns:repeat(5,1fr);gap:15px;max-width:1100px;margin:auto}.choice{background:#fff;border:1px solid #ececf3;border-radius:20px;padding:25px 16px;text-align:center;transition:.25s}.choice:hover{transform:translateY(-5px);border-color:#c4b5fd;box-shadow:0 15px 35px #7c3aed12}.choice .icon{font-size:32px;margin-bottom:12px}.choice h3{font-size:15px;margin-bottom:5px}.choice p{font-size:12px;color:#7a7f8d}
+.explorer{background:var(--navy);color:#fff}.explorer .sectionhead p{color:#c8cee1}.explorer .sectionhead h2{color:#fff}
+.panel{max-width:1100px;margin:auto;background:#fff;color:var(--navy);border-radius:28px;padding:30px;box-shadow:0 20px 60px #0003}.paneltop{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:25px}.paneltop h3{font-size:22px}.pill{background:#ede9fe;color:#6d28d9;padding:8px 12px;border-radius:99px;font-size:12px;font-weight:800}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.path{border:1px solid #ececf3;border-radius:18px;padding:20px;transition:.2s}.path:hover{border-color:#a78bfa;transform:translateY(-3px)}.path .emoji{font-size:28px}.path h4{margin:10px 0 6px}.path p{font-size:13px;color:#707584;line-height:1.5}.path button{margin-top:14px;color:var(--purple);background:#f5f3ff;padding:9px 12px;border-radius:10px;font-size:12px;font-weight:800}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:auto}.feature{padding:28px;border-radius:22px;background:#fff;border:1px solid #ececf3}.feature:nth-child(2){background:#f5f3ff}.feature:nth-child(3){background:#effcff}.feature span{font-size:30px}.feature h3{margin:15px 0 8px}.feature p{color:#6d7280;font-size:14px;line-height:1.55}
+.banner{margin:0 7% 80px;border-radius:30px;padding:55px;text-align:center;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff}.banner h2{font-size:42px;letter-spacing:-2px;margin-bottom:12px}.banner p{opacity:.9;margin-bottom:25px}.banner button{background:#fff;color:#6d28d9;padding:14px 22px;border-radius:13px;font-weight:900}
+footer{padding:30px 7%;display:flex;justify-content:space-between;color:#8a8f9d;font-size:13px;border-top:1px solid #eee}
+.modal{display:none;position:fixed;inset:0;background:#172554aa;z-index:30;place-items:center;padding:20px}.modal.show{display:grid}.modalbox{max-width:620px;width:100%;background:#fff;border-radius:28px;padding:32px;position:relative}.close{position:absolute;right:20px;top:16px;background:#f1f1f5;border-radius:50%;width:34px;height:34px}.modalbox h2{font-size:30px;margin-bottom:8px}.modalbox>p{color:#6b7280;margin-bottom:20px}.result{padding:17px;background:#f7f4ff;border-radius:15px;margin:10px 0}.result strong{display:block}.result small{color:#737887}
+@media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:55px}.map{height:350px}.choices{grid-template-columns:repeat(2,1fr)}.paths,.features{grid-template-columns:1fr}.navlinks{display:none}h1{letter-spacing:-2px}.banner{padding:40px 20px}.banner h2{font-size:32px}footer{flex-direction:column;gap:10px}}
+</style>
+</head>
+<body>
+<nav><div class="logo">WAY<span>PATH</span></div><div class="navlinks"><a href="#explore">Explore</a><a href="#paths">Career Paths</a><a href="#why">How it works</a></div><button class="cta" onclick="openExplorer()">Start exploring →</button></nav>
+
+<header class="hero">
+<div>
+<div class="badge">✦ YOUR FUTURE ISN'T ONE STRAIGHT LINE</div>
+<h1>Your major is only the <em>beginning.</em></h1>
+<p>Start with something you already care about. Waypath connects your interests, subjects, skills, majors, and careers so you can discover possibilities you didn't know existed.</p>
+<button class="cta" onclick="openExplorer()">Find my path →</button>
+</div>
+<div class="map" aria-label="Career galaxy illustration">
+<div class="line l1"></div><div class="line l2"></div><div class="line l3"></div><div class="line l4"></div>
+<div class="star s1">🚀</div><div class="star s2">🧬</div><div class="star s3">🎨</div><div class="star s4">💻</div><div class="star s5">🌱</div>
+<div class="mini m1">BIOLOGY</div><div class="mini m2">DESIGN</div><div class="mini m3">SKILLS</div>
+</div>
+</header>
+
+<section id="explore">
+<div class="sectionhead"><h2>Where do you want to start?</h2><p>You don't need to know your dream career. Start with whatever makes you curious.</p></div>
+<div class="choices">
+<div class="choice" onclick="explore('🧬 Biology')"><div class="icon">🧬</div><h3>A subject</h3><p>Something you enjoy learning</p></div>
+<div class="choice" onclick="explore('🎨 Drawing & design')"><div class="icon">🎨</div><h3>A hobby</h3><p>Something you love doing</p></div>
+<div class="choice" onclick="explore('🚀 Space')"><div class="icon">🚀</div><h3>An interest</h3><p>Something you wonder about</p></div>
+<div class="choice" onclick="explore('💻 Technology')"><div class="icon">💻</div><h3>A career</h3><p>Something you've been curious about</p></div>
+<div class="choice" onclick="explore('✨ Not sure yet')"><div class="icon">✨</div><h3>Not sure</h3><p>We'll help you discover</p></div>
+</div>
+</section>
+
+<section class="explorer" id="paths">
+<div class="sectionhead"><h2>One interest. So many paths.</h2><p>Tap a path to see how one starting point can branch into completely different futures.</p></div>
+<div class="panel">
+<div class="paneltop"><h3 id="selectedTitle">🧬 Biology → Career possibilities</h3><span class="pill">EXPLORE • CONNECT • DISCOVER</span></div>
+<div class="paths" id="pathCards"></div>
+</div>
+</section>
+
+<section id="why">
+<div class="sectionhead"><h2>Waypath turns “I have no idea” into “wait… really?”</h2><p>Explore without pressure. Compare without being told what to choose. Leave with a path worth investigating.</p></div>
+<div class="features">
+<div class="feature"><span>🌌</span><h3>Career Galaxy</h3><p>See majors, careers, skills, and education connected visually instead of buried in a giant list.</p></div>
+<div class="feature"><span>🧠</span><h3>Skill DNA</h3><p>Discover the skills behind different careers and see how you can start building them right now.</p></div>
+<div class="feature"><span>🔀</span><h3>Unexpected Paths</h3><p>Find careers you may never have considered from the subjects and interests you already have.</p></div>
+</div>
+</section>
+
+<div class="banner"><h2>Don't choose your whole future.</h2><p>Find a direction worth exploring.</p><button onclick="openExplorer()">Start my Waypath ✦</button></div>
+
+<footer><strong>WAYPATH</strong><span>Find your way forward.</span><span>Explore • Connect • Discover</span></footer>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modalbox"><button class="close" onclick="closeModal()">×</button><h2 id="modalTitle">Your Waypath</h2><p id="modalSub">Pick what sounds most like you.</p><div id="modalContent"></div></div>
+</div>
+
+<script>
+const data={
+"🧬 Biology":[["🔬","Research Scientist","Investigate living systems, run experiments, and discover new knowledge."],["🩺","Healthcare","Use science to understand, prevent, diagnose, or treat health problems."],["🌱","Environmental Science","Study ecosystems and solve problems affecting our planet."],["🧪","Biotechnology","Use biology and technology to create new products, treatments, and solutions."],["🧠","Neuroscience","Explore how the brain and nervous system work."]],
+"🎨 Drawing & design":[["📱","UX/UI Designer","Design digital experiences that are useful, intuitive, and beautiful."],["🎮","Game Designer","Combine creativity, storytelling, and technology to build interactive worlds."],["🏛️","Architect","Turn ideas into spaces by combining design, science, and problem-solving."],["🩻","Medical Illustrator","Use art and science to explain complex anatomy and medicine."],["📦","Product Designer","Shape how physical or digital products look, work, and feel."]],
+"🚀 Space":[["👩‍🚀","Aerospace Engineer","Design aircraft, spacecraft, and systems that explore the sky and beyond."],["🔭","Astronomer","Study stars, planets, galaxies, and the universe."],["🤖","Robotics Engineer","Build machines that can explore places humans can't easily reach."],["🛰️","Space Systems Analyst","Help plan and operate complex systems used in space missions."],["🌍","Earth & Planetary Scientist","Study planets and worlds to understand how they formed and changed."]],
+"💻 Technology":[["💻","Software Engineer","Build apps, platforms, and systems that solve real problems."],["🧠","AI / ML Specialist","Create systems that learn from data and help people make decisions."],["🔐","Cybersecurity Analyst","Protect information and technology from digital threats."],["📊","Data Scientist","Use statistics, programming, and reasoning to find meaning in data."],["🎨","UX Engineer","Combine coding and design to create better digital experiences."]],
+"✨ Not sure yet":[["🧪","Science & Discovery","Explore careers built around asking questions and figuring out how things work."],["🎨","Creative Careers","Turn ideas into designs, stories, products, media, and experiences."],["🤝","People & Impact","Help, teach, support, organize, and create change in people's lives."],["🌍","Planet & Society","Work on environmental, community, policy, and global challenges."],["💡","Technology & Innovation","Build new tools and solutions for problems that don't have easy answers."]]
+};
+function renderPaths(key){
+ document.getElementById('selectedTitle').textContent=key+" → Career possibilities";
+ document.getElementById('pathCards').innerHTML=(data[key]||data["🧬 Biology"]).map((x,i)=>`<div class="path"><div class="emoji">${x[0]}</div><h4>${x[1]}</h4><p>${x[2]}</p><button onclick="showCareer('${x[1]}','${x[2]}')">Explore path →</button></div>`).join('');
+}
+function explore(key){renderPaths(key);document.getElementById('paths').scrollIntoView({behavior:'smooth'});}
+function showCareer(title,desc){
+ document.getElementById('modalTitle').textContent=title;
+ document.getElementById('modalSub').textContent=desc;
+ document.getElementById('modalContent').innerHTML=`<div class="result"><strong>Skills you might build</strong><small>Problem solving • Communication • Curiosity • Adaptability</small></div><div class="result"><strong>Possible starting points</strong><small>Different majors and learning routes can lead here — your path doesn't have to look like anyone else's.</small></div><div class="result"><strong>Try it now</strong><small>Find a project, club, challenge, video, or real-world experience related to this career.</small></div>`;
+ document.getElementById('modal').classList.add('show');
+}
+function openExplorer(){
+ document.getElementById('modalTitle').textContent="What are you curious about?";
+ document.getElementById('modalSub').textContent="Choose a starting point — there are no wrong answers.";
+ document.getElementById('modalContent').innerHTML=Object.keys(data).map(k=>`<button class="result" style="width:100%;text-align:left;border:0" onclick="closeModal();explore('${k}')"><strong>${k}</strong><small>Explore connected career possibilities</small></button>`).join('');
+ document.getElementById('modal').classList.add('show');
+}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+renderPaths("🧬 Biology");
+</script>
+</body>
+</html>
